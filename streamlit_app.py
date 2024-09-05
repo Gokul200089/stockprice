@@ -21,8 +21,9 @@ hist = stock.history(period="1d", interval="1m")
 st.sidebar.success('Data Loaded Successfully!')
 
 # Display raw data in the main section
-st.write(f"Showing stock data for {stock_symbol}")
-st.dataframe(hist)
+with st.expander("Data"):
+    st.write(f"Showing stock data for {stock_symbol}")
+    st.dataframe(hist)
 
 # Train ARIMA model
 st.sidebar.header('Training Model...')
@@ -54,25 +55,3 @@ plt.xlabel('Datetime')
 plt.ylabel('Price')
 plt.legend()
 st.pyplot(plt)
-
-# Calculate accuracy metrics
-st.subheader('Accuracy Metrics')
-if len(close_prices) >= forecast_period:
-    test_set = close_prices[-forecast_period:]
-    # Ensure forecast matches length of test_set
-    if len(forecast) > len(test_set):
-        forecast = forecast[:len(test_set)]
-    
-    mae = mean_absolute_error(test_set, forecast)
-    rmse = np.sqrt(mean_squared_error(test_set, forecast))
-    mape = np.mean(np.abs((test_set - forecast) / test_set)) * 100
-
-    st.write(f"Mean Absolute Error (MAE): {mae:.2f}")
-    st.write(f"Root Mean Squared Error (RMSE): {rmse:.2f}")
-else:
-    st.write("Not enough historical data to calculate accuracy metrics.")
-
-st.sidebar.success('Forecast and Accuracy Calculated!')
-
-# End of the dashboard
-st.sidebar.write('Adjust forecast period using the slider.')
