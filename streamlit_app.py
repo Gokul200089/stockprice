@@ -36,7 +36,8 @@ st.sidebar.header('Generating Forecast...')
 forecast = model_fit.forecast(steps=forecast_period)
 
 # Ensure forecast is 1-dimensional
-forecast = np.array(forecast).flatten()
+if forecast.ndim > 1:
+    forecast = forecast.flatten()
 
 # Create forecast index
 last_time = hist.index[-1]
@@ -56,18 +57,18 @@ st.pyplot(plt)
 
 # Calculate accuracy metrics
 st.subheader('Accuracy Metrics')
-# To compare forecast with historical data
 if len(close_prices) >= forecast_period:
     test_set = close_prices[-forecast_period:]
-    forecast = forecast[:len(test_set)]
+    # Ensure forecast matches length of test_set
+    if len(forecast) > len(test_set):
+        forecast = forecast[:len(test_set)]
     
     mae = mean_absolute_error(test_set, forecast)
     rmse = np.sqrt(mean_squared_error(test_set, forecast))
     mape = np.mean(np.abs((test_set - forecast) / test_set)) * 100
 
-    st.write(f"Mean Absolute Error (MAE): {mae}")
-    st.write(f"Root Mean Squared Error (RMSE): {rmse}")
-    
+    st.write(f"Mean Absolute Error (MAE): {mae:.2f}")
+    st.write(f"Root Mean Squared Error (RMSE): {rmse:.2f}")
 else:
     st.write("Not enough historical data to calculate accuracy metrics.")
 
