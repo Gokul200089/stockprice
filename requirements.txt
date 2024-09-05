@@ -1,1 +1,7 @@
-streamlit>=1.26.0
+streamlit
+yfinance
+pandas
+scikit learn
+matplotlib
+statsmodels
+numpy
